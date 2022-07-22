@@ -120,15 +120,15 @@ It's features are first forcibly unloaded.
 If CLEAN is non-nil, previous variable bindings are not restored."
   (interactive (list (reload-read-library) current-prefix-arg))
   (let ((modes  (reload--buffer-modes library))
+        (vars   (mapcar (lambda (it) (cons it (symbol-value it)))
+                        (reload--library-symbols library 'var)))
         (locals (reload--buffer-local-vars library)))
     (apply #'reload--features (append (list (reload--library-file library))
                                       (reload--library-symbols library 'provide)))
     (reload--restore-buffer-modes library modes)
     (unless clean
       ;;@TODO: globalized-minors
-      (reload--restore-vars
-       (mapcar (lambda (it) (cons it (symbol-value it)))
-               (reload--library-symbols library 'var)))
+      (reload--restore-vars vars)
       (cl-loop for (buffer . pairs) in locals
                do (with-current-buffer buffer (reload--restore-vars pairs))))
     (message "Library %S reloaded" library)))
