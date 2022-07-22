@@ -6,6 +6,6 @@
 * Usage
 
 #+begin_src emacs-lisp :lexical t
-(reload 'reload)   ;;reloads the reload library, restoring current variable values
+(reload 'reload)   ;; Reloads the reload library, restoring current variable values.
 (reload 'reload t) ;; Same as above, but does not restore variables.
 #+end_src
