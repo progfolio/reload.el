@@ -80,15 +80,13 @@ If TYPE is nil, all types are returned."
 
 (defun reload--buffer-modes (library)
   "Return list of buffers which need modes reloaded after LIBRARY is reloaded."
-  (cl-loop
-   with defuns = (mapcar #'cdr (cl-remove-if-not (lambda (it) (eq it 'defun))
-                                                 (reload--loaded library)
-                                                 :key #'car-safe))
-   for b in (buffer-list)
-   collect (cons b (with-current-buffer b (cons major-mode local-minor-modes)))
-   into buffers
-   finally return (cl-remove-if-not (lambda (modes) (cl-intersection modes defuns))
-                                    buffers :key #'cdr)))
+  (cl-loop with defuns = (reload--library-symbols library 'defun)
+           for b in (buffer-list)
+           collect (cons b (with-current-buffer b (cons major-mode local-minor-modes)))
+           into buffers
+           finally return
+           (cl-remove-if-not (lambda (modes) (cl-intersection modes defuns))
+                             buffers :key #'cdr)))
 
 ;;@TODO: FILE should be optional, so we can make this play nice with load-prefer-newer.
 (defun reload--features (file &rest features)
