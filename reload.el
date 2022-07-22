@@ -100,9 +100,9 @@ Each pair is a cons cell of form: (SYMBOL . VALUE)."
   (cl-loop for (var . val) in pairs
            do (funcall (or (get var 'custom-set) #'set-default) var val)))
 
-(defun reload--restore-buffer-modes (buffers)
-  "Restore library BUFFERS."
-  (cl-loop with defuns = (reload--library-symbols 'elpaca-ui 'defun)
+(defun reload--restore-buffer-modes (library buffers)
+  "Restore LIBRARY BUFFERS."
+  (cl-loop with defuns = (reload--library-symbols library 'defun)
            for  (buffer major minors) in buffers
            do (with-current-buffer buffer
                 (let ((majorp (memq major defuns)))
@@ -123,7 +123,7 @@ If CLEAN is non-nil, previous variable bindings are not restored."
         (locals (reload--buffer-local-vars library)))
     (apply #'reload--features (append (list (reload--library-file library))
                                       (reload--library-symbols library 'provide)))
-    (reload--restore-buffer-modes modes)
+    (reload--restore-buffer-modes library modes)
     (unless clean
       ;;@TODO: globalized-minors
       (reload--restore-vars
