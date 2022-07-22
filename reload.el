@@ -25,7 +25,7 @@
 ;; along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ;;; Commentary:
-
+;; Hot reloader for elisp libraries
 
 ;;; Code:
 (require 'cl-lib)
