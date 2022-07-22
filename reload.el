@@ -50,6 +50,7 @@
                            (mapcar (lambda (f) (file-name-base (car f))) load-history)
                            nil t)))
 
+;;@TODO: defface, define-type, cl-defmethod
 (defun reload--library-symbols (library &optional type)
   "Return list of LIBRARY's symbols.
 TYPE may be one of the following symbols:
@@ -89,6 +90,7 @@ If TYPE is nil, all types are returned."
    finally return (cl-remove-if-not (lambda (modes) (cl-intersection modes defuns))
                                     buffers :key #'cdr)))
 
+;;@TODO: FILE should be optional, so we can make this play nice with load-prefer-newer.
 (defun reload--features (file &rest features)
   "Reload FILE's FEATURES."
   (cl-loop for feature in features do (progn (unload-feature feature t)
