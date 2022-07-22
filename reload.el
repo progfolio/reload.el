@@ -115,7 +115,7 @@ Each pair is a cons cell of form: (SYMBOL . VALUE)."
                     (cl-loop for minor in minors do (funcall minor)))))))
 
 ;;;###autoload
-(defun reload-library (library clean)
+(defun reload (library clean)
   "Reload LIBRARY.
 It's features are first forcibly unloaded.
 If CLEAN is non-nil, previous variable bindings are not restored."
