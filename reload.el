@@ -76,7 +76,6 @@ If TYPE is nil, all types are returned."
                     collect
                     (cons var (with-current-buffer buffer (symbol-value var))))
            when locals collect (cons buffer locals)))
-(reload--buffer-local-vars 'elpaca-ui)
 
 (defun reload--buffer-modes (library)
   "Return list of buffers which need modes reloaded after LIBRARY is reloaded."
