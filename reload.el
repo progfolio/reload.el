@@ -133,5 +133,7 @@ If CLEAN is non-nil, previous variable bindings are not restored."
                do (with-current-buffer buffer (reload--restore-vars pairs))))
     (message "Library %S reloaded" library)))
 
+;;(defvar reload-test t "A test var.")
+
 (provide 'reload)
 ;;; reload.el ends here
