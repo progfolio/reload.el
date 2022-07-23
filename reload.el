@@ -36,12 +36,15 @@
           load-path))
 
 (defun reload--library-file (library)
-  "Return LIBRARY file."
-  (locate-library (symbol-name library) nil (reload--load-path)))
+  "Return LIBRARY file or nil if LIBRARY can be located on `load-path'."
+  (unless (locate-library (symbol-name library))
+    (locate-library (symbol-name library) nil (reload--load-path))))
 
 (defun reload--loaded (library)
   "Return LIBRARY's loaded definitions."
-  (or (alist-get (reload--library-file library) load-history nil nil #'equal)
+  (or (alist-get (or (reload--library-file library)
+                     (locate-library (symbol-name library)))
+                 load-history nil nil #'equal)
       (user-error "Library not loaded: %S" library)))
 
 (defun reload-read-library ()
@@ -88,8 +91,7 @@ If TYPE is nil, all types are returned."
            (cl-remove-if-not (lambda (modes) (cl-intersection modes defuns))
                              buffers :key #'cdr)))
 
-;;@TODO: FILE should be optional, so we can make this play nice with load-prefer-newer.
-(defun reload--features (file &rest features)
+(defun reload--features (features &optional file)
   "Reload FILE's FEATURES."
   (cl-loop for feature in features do (progn (unload-feature feature t)
                                              (require feature file))))
@@ -123,8 +125,8 @@ If CLEAN is non-nil, previous variable bindings are not restored."
         (vars   (mapcar (lambda (it) (cons it (symbol-value it)))
                         (reload--library-symbols library 'var)))
         (locals (reload--buffer-local-vars library)))
-    (apply #'reload--features (append (list (reload--library-file library))
-                                      (reload--library-symbols library 'provide)))
+    (reload--features (reload--library-symbols library 'provide)
+                      (reload--library-file library))
     (reload--restore-buffer-modes library modes)
     (unless clean
       (let ((loaded (mapcar #'list (reload--library-symbols library 'var))))
