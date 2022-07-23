@@ -32,8 +32,7 @@
 
 (defun reload--load-path ()
   "Return `load-path' suitable for finding hot-loaded packages."
-  (append (mapcar (lambda (el) (file-name-directory (car el))) load-history)
-          load-path))
+  (append (mapcar (lambda (el) (file-name-directory (car el))) load-history) load-path))
 
 (defun reload--library-file (library)
   "Return LIBRARY file or nil if LIBRARY can be located on `load-path'."
