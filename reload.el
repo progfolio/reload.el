@@ -128,9 +128,14 @@ If CLEAN is non-nil, previous variable bindings are not restored."
     (reload--restore-buffer-modes library modes)
     (unless clean
       ;;@TODO: globalized-minors
-      (reload--restore-vars vars)
-      (cl-loop for (buffer . pairs) in locals
-               do (with-current-buffer buffer (reload--restore-vars pairs))))
+      (let ((loaded (mapcar #'list (reload--library-symbols library 'var))))
+        ;; vars is passed as last arg so `cl-intersection' keeps our symbol values.
+        (setq vars (cl-intersection loaded vars :key #'car))
+        (reload--restore-vars vars)
+        (cl-loop for (buffer . pairs) in locals
+                 do (with-current-buffer buffer
+                      (reload--restore-vars (cl-intersection vars pairs :key #'car))))))
+    ;;@TODO: clean up? Unbind symbols which were not restored?
     (message "Library %S reloaded" library)))
 
 ;;(defvar reload-test t "A test var.")
