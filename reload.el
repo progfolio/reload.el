@@ -43,7 +43,8 @@
   "Return LIBRARY's loaded definitions."
   (or (alist-get (or (reload--library-file library)
                      (locate-library (symbol-name library)))
-                 load-history nil nil #'equal)
+                 load-history nil nil (lambda (a b) (equal (file-name-sans-extension a)
+                                                           (file-name-sans-extension b))))
       (user-error "Library not loaded: %S" library)))
 
 (defun reload-read-library ()
